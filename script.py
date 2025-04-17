@@ -4,7 +4,10 @@ from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 
-load_dotenv("dev.env")
+try:
+    load_dotenv("dev.env")
+except:
+    pass
 
 CONTAINER_NAME = os.getenv("CONTAINER_NAME")
 
