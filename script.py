@@ -4,10 +4,7 @@ from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 
-try:
-    load_dotenv("dev.env")
-except:
-    pass
+load_dotenv("dev.env")
 
 CONTAINER_NAME = os.getenv("CONTAINER_NAME")
 
@@ -24,6 +21,7 @@ def get_data():
     # List blobs
     response = []
     for blob in blobs:
+        print(blob, prefix)
         response.append(blob.replace(f"{prefix}/", ""))
     if len(response) == 0:
         return (
