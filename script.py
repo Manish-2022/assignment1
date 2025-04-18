@@ -1,12 +1,16 @@
-import os
+import json
 
 from azure.storage.blob import BlobServiceClient
-from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 
-load_dotenv("dev.env")
+# Path to your JSON file
+file_path = "config.json"
 
-CONTAINER_NAME = os.getenv("CONTAINER_NAME")
+# Read JSON file
+with open(file_path, "r") as file:
+    data = json.load(file)
+
+CONTAINER_NAME = data["CONTAINER_NAME"]
 
 app = Flask(__name__)
 
@@ -14,7 +18,7 @@ app = Flask(__name__)
 @app.route("/get-data", methods=["GET"])
 def get_data():
     prefix = request.args.get("prefix")
-    connection_string = os.getenv("CONNECTION_STRING")
+    connection_string = data["CONNECTION_STRING"]
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     container_client = blob_service_client.get_container_client(CONTAINER_NAME)
     blobs = container_client.list_blob_names(name_starts_with=prefix)
@@ -35,5 +39,5 @@ def get_data():
     return jsonify(response), 200
 
 
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
